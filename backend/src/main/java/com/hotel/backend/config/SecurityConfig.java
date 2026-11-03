@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CorsConfig corsConfig;
@@ -36,10 +38,13 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/api-docs/**"
                                 ).permitAll()
-                                .requestMatchers(HttpMethod.GET,"/rooms/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/rooms/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT,"/rooms/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE,"/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET,"/rooms","/rooms/**").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/rooms","/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/rooms","/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/rooms","/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/bookings").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/bookings/*/status").hasRole("ADMIN")
+                                .requestMatchers("/bookings", "/bookings/**").authenticated()
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

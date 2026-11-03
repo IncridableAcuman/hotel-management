@@ -3,7 +3,6 @@ package com.hotel.backend.entity;
 import com.hotel.backend.entity.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
-@Builder @Slf4j
+@Builder
 public class RoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +30,7 @@ public class RoomEntity {
     @Column(name = "capacity")
     private int capacity;
 
+    @Builder.Default
     @Column(name = "is_active")
     private boolean isActive=true;
 

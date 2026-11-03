@@ -41,7 +41,7 @@ public class RoomDto {
         @Min(value = 1,message = "Capacity must be least 1 person")
         private int capacity;
 
-        private boolean isActive;
+        private Boolean isActive;
     }
     @Builder
     public record RoomResponse(

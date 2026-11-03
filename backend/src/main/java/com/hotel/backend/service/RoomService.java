@@ -6,7 +6,6 @@ import com.hotel.backend.exception.CustomBadRequestException;
 import com.hotel.backend.exception.CustomNotFoundException;
 import com.hotel.backend.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,7 @@ public class RoomService {
     @Transactional
     public RoomDto.RoomResponse createRoom(RoomDto.CreateRoomRequest request){
         if (roomRepository.existsByRoomNumber(request.getRoomNumber())){
-            throw new CustomBadRequestException("Room with number " + request.getRoomNumber() + "already exists");
+            throw new CustomBadRequestException("Room with number " + request.getRoomNumber() + " already exists");
         }
         RoomEntity room = RoomEntity
                 .builder()
@@ -34,7 +33,7 @@ public class RoomService {
     }
     @Transactional(readOnly = true)
     public List<RoomDto.RoomResponse> getAllRooms(boolean onlyActive){
-        List<RoomEntity> rooms = onlyActive ? roomRepository.findAllIsActiveTrue() : roomRepository.findAll();
+        List<RoomEntity> rooms = onlyActive ? roomRepository.findAllByIsActiveTrue() : roomRepository.findAll();
         return rooms
                 .stream()
                 .map(RoomDto.RoomResponse::from)
@@ -55,7 +54,9 @@ public class RoomService {
         room.setType(request.getType());
         room.setPricePerNight(request.getPricePerNight());
         room.setCapacity(request.getCapacity());
-        room.setActive(request.isActive());
+        if (request.getIsActive() != null){
+            room.setActive(request.getIsActive());
+        }
 
         return RoomDto.RoomResponse.from(roomRepository.save(room));
     }

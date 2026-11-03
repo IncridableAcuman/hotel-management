@@ -10,5 +10,5 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<RoomEntity,Long> {
     boolean existsByRoomNumber(String roomNumber);
     boolean existsByRoomNumberAndIdNot(String roomNumber,Long id);
-    List<RoomEntity> findAllIsActiveTrue();
+    List<RoomEntity> findAllByIsActiveTrue();
 }
