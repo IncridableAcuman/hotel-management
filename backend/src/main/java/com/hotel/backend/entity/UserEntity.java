@@ -47,8 +47,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.REMOVE)
-    private TokenEntity token;
 
     @PrePersist
     public void onCreate(){

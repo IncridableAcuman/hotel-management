@@ -19,7 +19,7 @@ public class TokenEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "refresh_token",nullable = false)
+    @Column(name = "refresh_token",nullable = false,length = 1000)
     private String refreshToken;
 
     @OneToOne

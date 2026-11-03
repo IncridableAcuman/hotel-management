@@ -24,6 +24,10 @@ public class AuthDto {
         @NotBlank(message = "Password must be required")
         @Size(min = 8,message = "Password must be greater than 8 character long")
         private String password;
+
+        @NotBlank(message = "Phone number must be required")
+        @Size(min = 9,message = "Phone number must be greater than 9 character long")
+        private String phone;
     }
     @Data
     public static class LoginRequest {
@@ -36,4 +40,9 @@ public class AuthDto {
         private String password;
     }
 
+    public record AuthResponse(String accessToken){
+        public static AuthResponse from(String accessToken){
+            return new AuthResponse(accessToken);
+        }
+    }
 }
