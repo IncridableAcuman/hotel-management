@@ -3,6 +3,7 @@ package com.hotel.backend.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -35,6 +36,10 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/api-docs/**"
                                 ).permitAll()
+                                .requestMatchers(HttpMethod.GET,"/rooms/**").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/rooms/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/rooms/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
