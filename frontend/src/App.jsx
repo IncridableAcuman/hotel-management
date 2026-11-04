@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -11,7 +11,7 @@ import MyBookingsView from './pages/MyBookingsView';
 import AdminDashboardView from './pages/AdminDashboardView';
 
 function MainApp() {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
 
   // Active navigation view: 'home' | 'my-bookings' | 'admin'
   const [activeView, setActiveView] = useState('home');
@@ -102,19 +102,25 @@ function MainApp() {
         onAuthSuccess={(msg) => notify({ type: 'success', message: msg })}
       />
 
-      <BookingModal
-        isOpen={bookingModalOpen}
-        onClose={() => setBookingModalOpen(false)}
-        room={selectedRoomForBooking}
-        initialCheckIn={bookingDates.checkIn}
-        initialCheckOut={bookingDates.checkOut}
-        onBookingSuccess={handleBookingSuccess}
-        onRequireAuth={() => {
-          setBookingModalOpen(false);
-          setAuthModalOpen(true);
-          notify({ type: 'info', message: 'Xonani bron qilish uchun avval profilingizga kiring' });
-        }}
-      />
+      {bookingModalOpen && selectedRoomForBooking && (
+        <BookingModal
+          key={`${selectedRoomForBooking.id}-${bookingDates.checkIn}`}
+          isOpen={bookingModalOpen}
+          onClose={() => {
+            setBookingModalOpen(false);
+            setSelectedRoomForBooking(null);
+          }}
+          room={selectedRoomForBooking}
+          initialCheckIn={bookingDates.checkIn}
+          initialCheckOut={bookingDates.checkOut}
+          onBookingSuccess={handleBookingSuccess}
+          onRequireAuth={() => {
+            setBookingModalOpen(false);
+            setAuthModalOpen(true);
+            notify({ type: 'info', message: 'Xonani bron qilish uchun avval profilingizga kiring' });
+          }}
+        />
+      )}
 
       <RoomDetailModal
         roomId={detailRoomId}

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { X, Calendar, Users, DollarSign, Bed, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { X, Calendar, Users, Bed, AlertCircle, CheckCircle } from 'lucide-react';
 import { formatMoney } from '../utils/formatters';
 import { bookingsApi } from '../api/bookingsApi';
 import { useAuth } from '../context/AuthContext';
@@ -29,9 +29,7 @@ export default function BookingModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  if (!isOpen || !room) return null;
-
-  // Calculate days & total
+  // Calculate days & total (must be before early returns to follow React Hook rules)
   const nights = useMemo(() => {
     if (!checkInDate || !checkOutDate) return 0;
     const start = new Date(checkInDate);
@@ -40,6 +38,8 @@ export default function BookingModal({
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0 ? diffDays : 0;
   }, [checkInDate, checkOutDate]);
+
+  if (!isOpen || !room) return null;
 
   const totalAmount = nights * (room.pricePerNight || 0);
 
