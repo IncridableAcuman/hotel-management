@@ -60,6 +60,9 @@ public class UserEntity implements UserDetails {
 
     @Override
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null || role.getType() == null) {
+            return List.of();
+        }
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.getType().name()));
     }
 

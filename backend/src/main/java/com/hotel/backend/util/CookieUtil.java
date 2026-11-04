@@ -8,18 +8,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieUtil {
-    @Value("${cookie.secure}")
+    @Value("${cookie.secure:false}")
     private boolean secure;
     @Value("${jwt.refresh_time}")
     private long refreshTime;
+    @Value("${cookie.same-site:Lax}")
+    private String sameSite;
 
     private void cookieManagement(String refreshToken, long expiration, HttpServletResponse response){
-        ResponseCookie cookie = ResponseCookie.from("refreshToken",refreshToken)
+        String effectiveSameSite = secure ? "None" : sameSite;
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .value(refreshToken)
                 .maxAge(expiration)
                 .httpOnly(true)
                 .secure(secure)
-                .sameSite("Lax")
+                .sameSite(effectiveSameSite)
                 .path("/")
                 .build();
 

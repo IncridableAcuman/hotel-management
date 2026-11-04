@@ -27,7 +27,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.refresh(refreshToken, response));
     }
     @PostMapping("/logout")
-    private ResponseEntity<String> logout(@CookieValue(name = "refreshToken",required = false) String refreshToken,HttpServletResponse response){
+    public ResponseEntity<String> logout(@CookieValue(name = "refreshToken",required = false) String refreshToken,HttpServletResponse response){
         authService.logout(refreshToken, response);
         return ResponseEntity.ok("Successfully logged out");
     }

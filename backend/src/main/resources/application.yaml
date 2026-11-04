@@ -1,5 +1,5 @@
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
   servlet:
     context-path: /api/v1
 
@@ -11,15 +11,23 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      max-lifetime: 600000
+      idle-timeout: 300000
+      connection-timeout: 30000
+      keepalive-time: 60000
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     open-in-view: false
     properties:
       hibernate:
         format-sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
 springdoc:
   api-docs:
     path: /api-docs
@@ -28,8 +36,12 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
-  access_time: ${JWT_ACCESS_TIME}
-  refresh_time: ${JWT_REFRESH_TIME}
+  access_time: ${JWT_ACCESS_TIME:900000}
+  refresh_time: ${JWT_REFRESH_TIME:604800000}
 
 cookie:
-  secure: ${SECURE}
+  secure: ${SECURE:false}
+  same-site: ${COOKIE_SAME_SITE:Lax}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://*.onrender.com}

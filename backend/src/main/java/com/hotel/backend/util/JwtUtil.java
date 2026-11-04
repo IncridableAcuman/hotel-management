@@ -38,7 +38,7 @@ public class JwtUtil {
         Map<String,Object> claims = new HashMap<>();
         claims.put("id",user.getId());
         claims.put("type",type);
-        if (user.getRole().getType() != null){
+        if (user.getRole() != null && user.getRole().getType() != null){
             claims.put("role",user.getRole().getType().name());
         }
 

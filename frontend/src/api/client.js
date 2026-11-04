@@ -1,4 +1,12 @@
-const BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const rawApiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+const BASE_URL = (() => {
+  if (!rawApiUrl || rawApiUrl === '/api/v1') return '/api/v1';
+  let url = rawApiUrl.trim();
+  if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+    url = `https://${url}`;
+  }
+  return url.endsWith('/api/v1') ? url : `${url.replace(/\/+$/, '')}/api/v1`;
+})();
 
 let isRefreshing = false;
 let refreshSubscribers = [];

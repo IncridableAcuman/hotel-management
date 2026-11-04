@@ -145,6 +145,9 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findByIdWithDetails(bookingId)
                 .orElseThrow(() -> new CustomNotFoundException("Booking not found with id: " + bookingId));
 
+        if (booking.getStatus() == BookingStatus.PENDING) {
+            throw new CustomBadRequestException("Booking must be confirmed before check-in");
+        }
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             throw new CustomBadRequestException("Cannot check in a cancelled booking");
         }
