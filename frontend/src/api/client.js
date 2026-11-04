@@ -1,4 +1,4 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+const rawApiUrl = import.meta.env.VITE_API_URL || "https://hotel-management-backend-5nx4.onrender.com" || "/api/v1";
 const BASE_URL = (() => {
   if (!rawApiUrl || rawApiUrl === '/api/v1') return '/api/v1';
   let url = rawApiUrl.trim();
