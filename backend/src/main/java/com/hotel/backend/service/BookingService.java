@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class BookingService {
             throw new CustomBadRequestException("Check-out date must be after check-in date");
         }
 
-        RoomEntity room = roomRepository.findById(request.getRoomId())
+        RoomEntity room = roomRepository.findByIdWithLock(request.getRoomId())
                 .orElseThrow(() -> new CustomNotFoundException("Room not found with id: " + request.getRoomId()));
 
         if (!room.isActive()) {
@@ -120,6 +121,58 @@ public class BookingService {
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
+        return BookingDto.BookingResponse.from(bookingRepository.save(booking));
+    }
+
+    @Transactional
+    public BookingDto.BookingResponse confirmBooking(Long bookingId) {
+        BookingEntity booking = bookingRepository.findByIdWithDetails(bookingId)
+                .orElseThrow(() -> new CustomNotFoundException("Booking not found with id: " + bookingId));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new CustomBadRequestException("Cannot confirm a cancelled booking");
+        }
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            throw new CustomBadRequestException("Booking is already confirmed");
+        }
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+        return BookingDto.BookingResponse.from(bookingRepository.save(booking));
+    }
+
+    @Transactional
+    public BookingDto.BookingResponse checkIn(Long bookingId) {
+        BookingEntity booking = bookingRepository.findByIdWithDetails(bookingId)
+                .orElseThrow(() -> new CustomNotFoundException("Booking not found with id: " + bookingId));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new CustomBadRequestException("Cannot check in a cancelled booking");
+        }
+        if (booking.getStatus() == BookingStatus.CHECKED_IN) {
+            throw new CustomBadRequestException("Guest is already checked in");
+        }
+        if (booking.getStatus() == BookingStatus.CHECKED_OUT) {
+            throw new CustomBadRequestException("Booking is already completed");
+        }
+
+        if (LocalDate.now().isBefore(booking.getCheckInDate())) {
+            throw new CustomBadRequestException("Cannot check in before check-in date: " + booking.getCheckInDate());
+        }
+
+        booking.setStatus(BookingStatus.CHECKED_IN);
+        return BookingDto.BookingResponse.from(bookingRepository.save(booking));
+    }
+
+    @Transactional
+    public BookingDto.BookingResponse checkOut(Long bookingId) {
+        BookingEntity booking = bookingRepository.findByIdWithDetails(bookingId)
+                .orElseThrow(() -> new CustomNotFoundException("Booking not found with id: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.CHECKED_IN) {
+            throw new CustomBadRequestException("Only checked-in bookings can be checked out");
+        }
+
+        booking.setStatus(BookingStatus.CHECKED_OUT);
         return BookingDto.BookingResponse.from(bookingRepository.save(booking));
     }
 

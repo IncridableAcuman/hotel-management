@@ -1,2 +1,42 @@
 services:
-  
+  postgres:
+    image: postgres:16-alpine
+    container_name: hotel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hotel
+      POSTGRES_USER: admin2003
+      POSTGRES_PASSWORD: admin2003
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin2003 -d hotel"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hotel-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DB_URL: jdbc:postgresql://postgres:5432/hotel
+      DB_USER: admin2003
+      DB_PASS: admin2003
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970337336763979244226452948404D635166546A576E5A7234753778214125442A
+      JWT_ACCESS_TIME: 900000
+      JWT_REFRESH_TIME: 604800000
+      SECURE: "false"
+
+volumes:
+  postgres_data:

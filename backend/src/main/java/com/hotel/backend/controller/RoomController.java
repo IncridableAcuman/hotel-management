@@ -20,8 +20,10 @@ public class RoomController {
         return ResponseEntity.ok(roomService.createRoom(request));
     }
     @GetMapping
-    public ResponseEntity<List<RoomDto.RoomResponse>> getAllRooms(@RequestParam(name = "onlyActive",defaultValue = "true") boolean onlyActive){
-        return ResponseEntity.ok(roomService.getAllRooms(onlyActive));
+    public ResponseEntity<List<RoomDto.RoomResponse>> getAllRooms(
+            @ModelAttribute RoomDto.RoomFilterRequest filter
+    ){
+        return ResponseEntity.ok(roomService.searchRooms(filter));
     }
     @GetMapping("/{id}")
     public ResponseEntity<RoomDto.RoomResponse> getRoomById(@PathVariable Long id){

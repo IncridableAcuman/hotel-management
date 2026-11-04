@@ -43,8 +43,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT,"/rooms","/rooms/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE,"/rooms","/rooms/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/bookings").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "/bookings/*/status").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PATCH, "/bookings/*/status", "/bookings/*/confirm", "/bookings/*/check-in", "/bookings/*/check-out").hasRole("ADMIN")
                                 .requestMatchers("/bookings", "/bookings/**").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+                                .requestMatchers("/users", "/users/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

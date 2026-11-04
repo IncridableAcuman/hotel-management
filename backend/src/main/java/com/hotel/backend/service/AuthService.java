@@ -51,12 +51,11 @@ public class AuthService {
                 .phone(request.getPhone())
                 .build();
 
-        RoleEntity role = roleService.createRole(user, RoleType.CUSTOMER);
-
-        user.setRole(role);
-
         UserEntity saved = userRepository.save(user);
-        return authResponse(saved,response);
+        RoleEntity role = roleService.createRole(saved, RoleType.CUSTOMER);
+        saved.setRole(role);
+
+        return authResponse(saved, response);
     }
     public AuthDto.AuthResponse login(AuthDto.LoginRequest request,HttpServletResponse response){
         UserEntity user = getUserByEmail(request.getEmail());

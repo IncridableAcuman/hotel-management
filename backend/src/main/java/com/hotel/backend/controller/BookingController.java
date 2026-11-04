@@ -60,4 +60,19 @@ public class BookingController {
     ) {
         return ResponseEntity.ok(bookingService.updateStatus(id, request.getStatus()));
     }
+
+    @PatchMapping("/{id}/confirm")
+    public ResponseEntity<BookingDto.BookingResponse> confirmBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.confirmBooking(id));
+    }
+
+    @PatchMapping("/{id}/check-in")
+    public ResponseEntity<BookingDto.BookingResponse> checkIn(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.checkIn(id));
+    }
+
+    @PatchMapping("/{id}/check-out")
+    public ResponseEntity<BookingDto.BookingResponse> checkOut(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.checkOut(id));
+    }
 }

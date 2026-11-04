@@ -9,10 +9,22 @@ import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 public class RoomDto {
+    @Data
+    public static class RoomFilterRequest {
+        private RoomType type;
+        private Double minPrice;
+        private Double maxPrice;
+        private Integer capacity;
+        private LocalDate checkInDate;
+        private LocalDate checkOutDate;
+        private Boolean onlyActive = true;
+    }
+
     @Data
     public static class CreateRoomRequest {
         @NotBlank(message = "Room number is required")
